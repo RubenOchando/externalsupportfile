@@ -1,0 +1,998 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "kundenavn": {
+            "defaultValue": "SKRIV_INN_KUNDENAVN_HER",
+            "type": "string"
+        },
+        "point_of_contact": {
+            "defaultValue": "SKRIV_INN_POINT_OF_CONTACT",
+            "type": "string"
+        },
+        "point_of_contact_epost": {
+            "defaultValue": "SKRIV_INN_EMAIL",
+            "type": "string"
+        },
+        "point_of_contact_tlf": {
+            "defaultValue": "SKRIV_INN_TLF",
+            "type": "string"
+        },
+        "location": {
+            "defaultValue": "westeurope",
+            "type": "string"
+        },
+        "scope_loganalyticworkspace": {
+            "defaultValue": "full_url_til_loganalyticworkspace_hos_kunde",
+            "type": "string"
+        },
+        "scope_all_subscription": {
+            "defaultValue": "/subscriptioncode",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "actiongroup-003_commandcenter": "/subscriptions/73914e1d-1851-449d-8d9e-dd6673d0df5f/resourceGroups/CommandCenter/providers/microsoft.insights/actiongroups/ag-pt-operations-westeur-003",
+        "description": "[concat('Kundenavn: |',parameters('kundenavn'),'|\n','Point of contact: |',parameters('point_of_contact'),'|\n','Telefon: |',parameters('point_of_contact_tlf'),'|\n', 'Epost: |',parameters('point_of_contact_epost'),'|\n')]",
+        "alert_backup_admin": "alert-backup-admin-sev4",
+        "alert_backup_create_vault": "alert-backup-create-vault-sev4",
+        "alert_backup_delete_vault": "alert-backup-delete-vault-sev2",
+        "alert_backup_exportjobs": "alert-backup-exportjobs-sev4",
+        "alert_backup_sec_pin_info": "alert-backup-sec-pin-info-sev4",
+        "alert_backup_validate_operation": "alert-backup-validate-operation-sev4",
+        "alert_keyvault_all_administrative": "alert-keyvault-all-administrative-sev2",
+        "alert_keyvault_delete": "alert-keyvault-delete-sev1",
+        "alert_keyvault_on_off_endpoint_connection": "alert-keybvault-on-off-endpoint-connection-sev3",
+        "alert_stg_abort_account_migration": "alert-stg-abort-account-migration-sev2",
+        "alert_stg_approve_private_endpoint_connections": "alert-approve-private-endpoint-connections-sev4",
+        "alert_stg_create_update": "alert-stg-create-update-sev1",
+        "alert_stg_delete_account": "alert-stg-delete-account-sev1",
+        "alert_stg_feilover": "alert-stg-feilover-sev1",
+        "alert_stg_HnsOn_Migration": "alert-stg-HnsOn-Migration-sv4",
+        "alert_stg_regenerate_keys": "alert-stg-regenerate-keys-sev4",
+        "alert_stg_restore_blob_ranges": "alert-stg-restore-blob-ranges-sev4",
+        "alert_stg_returns_sas_token": "alert-stg-returns-sas-token-sev4",
+        "alert_stg_revoke_user_delegation_keys": "alert-stg-revoke-user-delegation-keys-sev4",
+        "alert_stg_service_sas_token": "alert-stg-service-sas-token-sev4",
+        "alert_svcplan_all_administrative": "alert_svcplan_all_administrative-sev4",
+        "alert_svcplan_create_update": "alert-svcplan-create-update-sev2",
+        "alert_svcplan_deleteplan": "alert-svcplan-deleteplan-sev1",
+        "alert_svcplan_joinplan": "alert-svcplan-joinplan-sev4",
+        "alert_svcplan_restartplan": "alert-svcplan-restartplan-sev2"
+    },
+    "resources": [
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_keyvault_delete')]",
+            "location": "Global",
+            "tags": {
+                "last-review": "2021-03-24",
+                "last-updated-by": ""
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.KeyVault/vaults/delete"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |keyvault_delete|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_keyvault_on_off_endpoint_connection')]",
+            "location": "global",
+            "tags": {
+                "last-review": "2021-03-24",
+                "last-updated-by": ""
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.KeyVault/vaults/PrivateEndpointConnectionsApproval/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |keyvault_on_off_endpoint_connection|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_keyvault_all_administrative')]",
+            "location": "Global",
+            "tags": {
+                "last-review": "2021-03-24",
+                "last-updated-by": ""
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "level",
+                            "containsAny": [
+                                "critical",
+                                "warning"
+                            ]
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |keyvault_all_administrative|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_delete_account')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-26"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/delete"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |storage delete|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2017-04-01",
+            "name": "[variables('alert_stg_feilover')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-01"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/failover/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |storage failover|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_regenerate_keys')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/regeneratekey/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_regenerate_keys|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_returns_sas_token')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/listAccountSas/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_returns_sas_token|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_revoke_user_delegation_keys')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/revokeUserDelegationKeys/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_revoke_user_delegation_keys|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_service_sas_token')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/listServiceSas/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_service_sas_token|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_HnsOn_Migration')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/hnsonmigration/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_HnsOn_Migration|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_approve_private_endpoint_connections')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/PrivateEndpointConnectionsApproval/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_approve_private_endpoint_connections|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_abort_account_migration')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/hnsonmigration/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_abort_account_migration|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_restore_blob_ranges')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-03-25"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/restoreBlobRanges/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_restore_blob_ranges|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_stg_create_update')]",
+            "location": "Global",
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Storage/storageAccounts/write"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |stg_create_update|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_svcplan_all_administrative')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-07"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "level",
+                            "containsAny": [
+                                "critical",
+                                "warning"
+                            ]
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |svcplan_all_administrative|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_svcplan_create_update')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-07"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Web/serverfarms/Write"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |svcplan_create_update|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_svcplan_deleteplan')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-07"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Web/serverfarms/Delete"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |svcplan_deleteplan|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_svcplan_joinplan')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-07"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Web/serverfarms/Join/Action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |svcplan_joinplan|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_svcplan_restartplan')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-07"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Web/serverfarms/restartSites/Action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |svcplan_restartplan|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_backup_admin')]",
+            "location": "Global",
+            "tags": {
+                "last-review": "2021-04-20T00:00:00.0000000Z",
+                "last-updated-by": "Ruben Ochando"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "level",
+                            "containsAny": [
+                                "critical",
+                                "warning"
+                            ]
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |backup_admin|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_backup_create_vault')]",
+            "location": "Global",
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.RecoveryServices/Vaults/write"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |backup_create_vault|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_backup_delete_vault')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-20"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.RecoveryServices/Vaults/delete"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |backup_delete_vault|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_backup_exportjobs')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-20"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.RecoveryServices/Vaults/backupJobsExport/action"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |backup_exportjobs|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_backup_sec_pin_info')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-20"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.RecoveryServices/Vaults/backupSecurityPIN/action"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |backup_sec_pin_info|')]"
+            }
+        },
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('alert_backup_validate_operation')]",
+            "location": "Global",
+            "tags": {
+                "last-updated-by": "",
+                "last-review": "2021-04-20"
+            },
+            "properties": {
+                "scopes": [
+                    "[parameters('scope_all_subscription')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.RecoveryServices/Vaults/backupValidateOperation/action"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[variables('actiongroup-003_commandcenter')]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "[concat(variables('description'),'Alarm: |backup_validate_operation|')]"
+            }
+        }
+    ]
+}

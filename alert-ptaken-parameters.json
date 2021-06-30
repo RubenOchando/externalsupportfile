@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "kundenavn": {
+        "value": "Point Taken"
+        },
+        "point_of_contact": {
+        "value": "Test-Andre"
+        },
+        "point_of_contact_epost": {
+        "value": "test@test.no"
+        },
+        "point_of_contact_tlf": {
+        "value": "81549300"
+        },
+        "location": {
+            "value": "norwayeast"
+        },
+        "scope_loganalyticworkspace": {
+            "value": "/subscriptions/09277bbe-69f1-4e20-87e2-1bcf288e3aa0/resourceGroups/rg-pt-operations-westeur-001/providers/microsoft.operationalinsights/workspaces/log-pt-westeur-001-Ptaken"
+        },
+        "scope_all_subscription": {
+            "value": "/subscriptions/09277bbe-69f1-4e20-87e2-1bcf288e3aa0"
+        }
+    }
+}
